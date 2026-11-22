@@ -9,7 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # يمكنك وضع معرّفاتك الحقيقية في: Settings > Secrets and variables > Actions > Variables
       ADMOB_APP_ID: ${{ vars.ADMOB_APP_ID || 'ca-app-pub-3940256099942544~3347511713' }}
       ADMOB_BANNER: ${{ vars.ADMOB_BANNER || 'ca-app-pub-3940256099942544/6300978111' }}
       ADMOB_INTERSTITIAL: ${{ vars.ADMOB_INTERSTITIAL || 'ca-app-pub-3940256099942544/1033173712' }}
@@ -25,6 +24,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: "3.32.8"
           channel: stable
           cache: true
 
