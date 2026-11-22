@@ -61,6 +61,14 @@ class Store {
     return true;
   }
 
+  // ---------- الصوت ----------
+  static bool get soundOn => _p.getBool('sound') ?? true;
+
+  static Future<void> setSound(bool v) async {
+    await _p.setBool('sound', v);
+    tick.value++;
+  }
+
   // ---------- الاختبار الخاطف ----------
   static int get bestQuick => _p.getInt('quick_best') ?? 0;
 

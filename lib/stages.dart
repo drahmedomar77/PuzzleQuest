@@ -9,7 +9,7 @@ enum Track { iq, speech }
 
 extension TrackX on Track {
   String get title => this == Track.iq ? 'ألغاز الذكاء' : 'تحدي النطق';
-  int get stagesPerTier => this == Track.iq ? 3 : 2;
+  int get stagesPerTier => this == Track.iq ? iqStagesPerTier : 2;
 }
 
 class StageRef {

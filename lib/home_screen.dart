@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'questions.dart';
 import 'quick_test_screen.dart';
+import 'sfx.dart';
 import 'stage_map_screen.dart';
 import 'stages.dart';
 import 'store.dart';
@@ -58,9 +59,11 @@ class HomeScreen extends StatelessWidget {
     if (picked == null || !context.mounted) return;
     await Store.markDaily();
     if (picked == q.answer) {
+      Sfx.correct();
       await Store.addCoins(10);
       if (context.mounted) showSnack(context, 'إجابة صحيحة! +10 لمعات ⚡');
     } else {
+      Sfx.wrong();
       if (context.mounted) {
         showSnack(context, 'الإجابة الصحيحة: ${q.options[q.answer]}');
       }
@@ -71,6 +74,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       title: 'لمعة ✨',
+      actions: const [_SoundButton()],
       body: ValueListenableBuilder<int>(
         valueListenable: Store.tick,
         builder: (context, _, __) {
@@ -147,6 +151,23 @@ class HomeScreen extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// زر كتم/تشغيل المؤثرات الصوتية
+class _SoundButton extends StatelessWidget {
+  const _SoundButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: Store.tick,
+      builder: (context, _, __) => IconButton(
+        tooltip: Store.soundOn ? 'كتم الصوت' : 'تشغيل الصوت',
+        icon: Icon(Store.soundOn ? Icons.volume_up : Icons.volume_off),
+        onPressed: () => Store.setSound(!Store.soundOn),
       ),
     );
   }

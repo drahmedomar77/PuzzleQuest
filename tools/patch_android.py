@@ -5,6 +5,7 @@
 - اسم التطبيق على الهاتف
 - الحد الأدنى لإصدار أندرويد 23
 - queries لخدمة التعرف على الكلام (أندرويد 11+)
+- أيقونة التطبيق من android_res/
 """
 import os
 import re
@@ -73,5 +74,12 @@ for gradle in ("android/app/build.gradle.kts", "android/app/build.gradle"):
             f.write(new)
         patched = True
     print(f"{gradle}: minSdk patched = {patched}")
+
+# أيقونة التطبيق (adaptive + legacy) من مجلد android_res في جذر المشروع
+import shutil
+
+if os.path.isdir("android_res"):
+    shutil.copytree("android_res", "android/app/src/main/res", dirs_exist_ok=True)
+    print("تم نسخ أيقونة التطبيق")
 
 print("تم تعديل ملفات أندرويد بنجاح")

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'ads.dart';
 import 'questions.dart';
+import 'sfx.dart';
 import 'stages.dart';
 import 'store.dart';
 import 'widgets.dart';
@@ -80,6 +81,12 @@ class _QuizScreenState extends State<QuizScreen> {
       _picked = n;
       if (n == _items[_i].answer) _correct++;
     });
+    // مؤثر صوتي: صحيح، أو خاطئ (يشمل انتهاء الوقت)
+    if (n == _items[_i].answer) {
+      Sfx.correct();
+    } else {
+      Sfx.wrong();
+    }
   }
 
   void _next() {

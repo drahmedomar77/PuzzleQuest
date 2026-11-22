@@ -11,9 +11,6 @@ const String kShareLink = '';
 
 const String kBrand = 'لمعة';
 
-/// مهارات الأسئلة. الأسئلة في questions.dart بلا وسم، فنستنتج المهارة من نص السؤال.
-enum Skill { patterns, math, language, logic }
-
 /// أسماء محاور الرادار الخمسة، بنفس ترتيب [Skill.values] ثم السرعة.
 const List<String> kAxisLabels = [
   'الأنماط',
@@ -23,7 +20,10 @@ const List<String> kAxisLabels = [
   'السرعة',
 ];
 
+/// الوسم الصريح في السؤال له الأولوية، وإلا نستنتج المهارة من نص السؤال (للأسئلة القديمة).
 Skill skillOf(Question q) {
+  final tagged = q.skill;
+  if (tagged != null) return tagged;
   final t = q.text;
   bool has(List<String> words) => words.any(t.contains);
   if (has(['العدد التالي', 'العدد الشاذ', '←'])) return Skill.patterns;

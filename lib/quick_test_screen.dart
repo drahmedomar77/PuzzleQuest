@@ -7,6 +7,7 @@ import 'ads.dart';
 import 'questions.dart';
 import 'quick_logic.dart';
 import 'result_card.dart';
+import 'sfx.dart';
 import 'store.dart';
 import 'widgets.dart';
 
@@ -95,6 +96,7 @@ class _QuickTestScreenState extends State<QuickTestScreen> {
       _coins = coins;
       _stage = _Stage.result;
     });
+    Sfx.finish();
     Ads.stageFinished();
   }
 
