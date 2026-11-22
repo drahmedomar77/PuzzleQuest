@@ -1,0 +1,52 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # يمكنك وضع معرّفاتك الحقيقية في: Settings > Secrets and variables > Actions > Variables
+      ADMOB_APP_ID: ${{ vars.ADMOB_APP_ID || 'ca-app-pub-3940256099942544~3347511713' }}
+      ADMOB_BANNER: ${{ vars.ADMOB_BANNER || 'ca-app-pub-3940256099942544/6300978111' }}
+      ADMOB_INTERSTITIAL: ${{ vars.ADMOB_INTERSTITIAL || 'ca-app-pub-3940256099942544/1033173712' }}
+      ADMOB_REWARDED: ${{ vars.ADMOB_REWARDED || 'ca-app-pub-3940256099942544/5224354917' }}
+      APP_ORG: ${{ vars.APP_ORG || 'com.lamaa' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Android project
+        run: flutter create --platforms=android --org "$APP_ORG" .
+
+      - name: Patch Android files
+        run: python3 tools/patch_android.py
+
+      - name: Remove generated sample test
+        run: rm -rf test
+
+      - run: flutter pub get
+
+      - name: Build release APK
+        run: >
+          flutter build apk --release
+          --dart-define=ADMOB_BANNER=$ADMOB_BANNER
+          --dart-define=ADMOB_INTERSTITIAL=$ADMOB_INTERSTITIAL
+          --dart-define=ADMOB_REWARDED=$ADMOB_REWARDED
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lamaa-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
