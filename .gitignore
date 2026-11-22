@@ -1,10 +1,21 @@
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+pubspec.lock
+.idea/
 *.iml
-.gradle/
-/local.properties
-/.idea/
 .DS_Store
-/build/
-/app/build/
-/captures/
-.externalNativeBuild/
-.cxx/
+
+# مجلد أندرويد يُولَّد تلقائياً في GitHub Actions (انظر README)
+android/
+ios/
+test/
+.metadata
+analysis_options.yaml
+
+# مفاتيح التوقيع - لا ترفعها أبداً
+*.jks
+*.keystore
+key.properties
