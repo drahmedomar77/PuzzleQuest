@@ -39,15 +39,15 @@ class Achievements {
         icon: Icons.psychology, target: 5, reward: 20,
         progress: () => Store.passedStages('iq_')),
     Achievement(
-        id: 'easy_done', title: 'سيّد السهل', desc: 'اجتز كل مراحل المستوى السهل',
+        id: 'easy_done', title: 'بطل السهل', desc: 'اجتز كل مراحل المستوى السهل',
         icon: Icons.looks_one, target: iqStagesPerTier, reward: 30,
         progress: () => Store.passedStages('iq_easy_')),
     Achievement(
-        id: 'medium_done', title: 'سيّد المتوسط', desc: 'اجتز كل مراحل المستوى المتوسط',
+        id: 'medium_done', title: 'بطل المتوسط', desc: 'اجتز كل مراحل المستوى المتوسط',
         icon: Icons.looks_two, target: iqStagesPerTier, reward: 40,
         progress: () => Store.passedStages('iq_medium_')),
     Achievement(
-        id: 'hard_done', title: 'سيّد الصعب', desc: 'اجتز كل مراحل المستوى الصعب',
+        id: 'hard_done', title: 'بطل الصعب', desc: 'اجتز كل مراحل المستوى الصعب',
         icon: Icons.looks_3, target: iqStagesPerTier, reward: 60,
         progress: () => Store.passedStages('iq_hard_')),
     Achievement(
