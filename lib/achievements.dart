@@ -124,8 +124,8 @@ class Achievements {
       if (shown.isEmpty) return;
       final reward = shown.fold<int>(0, (s, a) => s + a.reward);
       final text = shown.length == 1
-          ? '🏆 إنجاز جديد: ${shown.first.title} (+$reward لمعة)'
-          : '🏆 فتحت ${shown.length} إنجازات جديدة (+$reward لمعة)';
+          ? '🏆 إنجاز جديد: ${shown.first.title} (\u200E+$reward لمعة)'
+          : '🏆 فتحت ${shown.length} إنجازات جديدة (\u200E+$reward لمعة)';
       rootMessengerKey.currentState
         ?..hideCurrentSnackBar()
         ..showSnackBar(SnackBar(

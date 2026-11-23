@@ -137,7 +137,7 @@ class _StageResultState extends State<StageResult> {
             const SizedBox(height: 8),
             StatChip(
                 icon: Icons.bolt,
-                text: '+${widget.coins} لمعة${_doubled ? ' (×2)' : ''}',
+                text: '\u200E+${widget.coins} لمعة${_doubled ? ' (×2)' : ''}',
                 color: kGold),
             const SizedBox(height: 16),
             if (!_doubled && widget.coins > 0)

@@ -141,7 +141,7 @@ class _QuickTestScreenState extends State<QuickTestScreen> {
         const SizedBox(height: 16),
         Text(
           '$kQuickQuestions أسئلة متدرجة من السهل إلى الصعب، ولكل سؤال وقته '
-          '(${Tier.easy.seconds} / ${Tier.medium.seconds} / ${Tier.hard.seconds} ثانية).',
+          '(${Tier.easy.seconds} ثانية للسهل، ${Tier.medium.seconds} للمتوسط، ${Tier.hard.seconds} للصعب).',
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 17, height: 1.6),
         ),
@@ -277,7 +277,7 @@ class _QuickTestScreenState extends State<QuickTestScreen> {
         const SizedBox(height: 8),
         Center(
             child: StatChip(
-                icon: Icons.bolt, text: '+$_coins لمعة', color: kGold)),
+                icon: Icons.bolt, text: '\u200E+$_coins لمعة', color: kGold)),
         const SizedBox(height: 14),
         FilledButton.icon(
           onPressed: _share,

@@ -66,7 +66,8 @@ class _Summary extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text('$unlocked / $total',
+          Text('$unlocked/$total',
+              textDirection: TextDirection.ltr,
               style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
           const Text('إنجاز مفتوح',
@@ -147,7 +148,7 @@ class _AchievementCard extends StatelessWidget {
                     style: const TextStyle(fontSize: 13, color: Colors.white60)),
                 const SizedBox(height: 8),
                 if (unlocked)
-                  Text('✓ مكتمل  •  +${a.reward} لمعة',
+                  Text('✓ مكتمل  •  \u200E+${a.reward} لمعة',
                       style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,

@@ -32,7 +32,7 @@ class QuizScreen extends StatefulWidget {
   State<QuizScreen> createState() => _QuizScreenState();
 }
 
-class _QuizScreenState extends State<QuizScreen> {
+class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
   static const int hintCost = 10;
 
   late final List<_Item> _items;
@@ -44,6 +44,7 @@ class _QuizScreenState extends State<QuizScreen> {
   int? _picked;
   bool _locked = false;
   bool _done = false;
+  bool _inBackground = false; // المؤقت يتوقف أثناء خروج اللاعب من التطبيق
   int _stars = 0;
   int _earned = 0;
 
@@ -52,6 +53,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _items = [
       for (final q in questionsFor(_tier, widget.stage.index)) _shuffled(q)
     ];
@@ -60,15 +62,22 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     super.dispose();
+  }
+
+  /// مكالمة أو إشعار أو تبديل تطبيق لا يجب أن يُسقط السؤال، فنوقف العدّ حتى العودة.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _inBackground = state != AppLifecycleState.resumed;
   }
 
   void _startTimer() {
     _timer?.cancel();
     _left = _tier.seconds;
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted || _locked || _done) return;
+      if (!mounted || _locked || _done || _inBackground) return;
       setState(() => _left--);
       if (_left <= 0) _pick(-1); // انتهى الوقت
     });
