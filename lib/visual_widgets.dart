@@ -16,7 +16,7 @@ class QuestionVisual extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.25),
           borderRadius: BorderRadius.circular(20),
@@ -68,7 +68,7 @@ class QuestionVisual extends StatelessWidget {
       children: [
         for (var i = 0; i < items.length; i++)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
+            padding: const EdgeInsets.symmetric(vertical: 2),
             child: _row(items[i], i == items.length - 1),
           ),
       ],
@@ -85,7 +85,7 @@ class QuestionVisual extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Text(tk,
                 style: TextStyle(
-                    fontSize: _isSymbol(tk) ? 34 : 28,
+                    fontSize: _isSymbol(tk) ? 28 : 24,
                     fontWeight: FontWeight.bold,
                     color: last && !_isSymbol(tk) && _isPlain(tk)
                         ? kGold
@@ -96,7 +96,7 @@ class QuestionVisual extends StatelessWidget {
     final boxed = FittedBox(fit: BoxFit.scaleDown, child: row);
     if (!last) return boxed;
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
       decoration: BoxDecoration(
         color: kGold.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(14),

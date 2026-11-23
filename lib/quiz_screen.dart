@@ -214,9 +214,9 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
               backgroundColor: Colors.white12,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: item.kind == QKind.text ? 20 : 12),
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(item.kind == QKind.text ? 20 : 12),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(20),
@@ -224,8 +224,10 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
             ),
             child: Text(item.text,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 22, fontWeight: FontWeight.bold, height: 1.5)),
+                style: TextStyle(
+                    fontSize: item.kind == QKind.text ? 22 : 19,
+                    fontWeight: FontWeight.bold,
+                    height: 1.5)),
           ),
           if (item.kind == QKind.equation || item.kind == QKind.tiles) ...[
             const SizedBox(height: 12),
@@ -300,7 +302,8 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
           borderRadius: BorderRadius.circular(16),
           onTap: _locked ? null : () => _pick(k),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            padding: EdgeInsets.symmetric(
+                vertical: item.kind == QKind.text ? 16 : 11, horizontal: 16),
             child: Text(item.options[k],
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w600)),
