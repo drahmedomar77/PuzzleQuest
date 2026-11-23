@@ -42,12 +42,16 @@ class QuickQuestion {
   final Tier tier;
   final Skill skill;
   final String text;
+  final QKind kind;
+  final List<String> visual;
   final List<String> options;
   final int answer;
   const QuickQuestion({
     required this.tier,
     required this.skill,
     required this.text,
+    this.kind = QKind.text,
+    this.visual = const [],
     required this.options,
     required this.answer,
   });
@@ -87,6 +91,8 @@ List<QuickQuestion> buildQuickTest([Random? random]) {
       tier: tier,
       skill: skillOf(q),
       text: q.text,
+      kind: q.kind,
+      visual: q.visual,
       options: options,
       answer: options.indexOf(correct),
     ));

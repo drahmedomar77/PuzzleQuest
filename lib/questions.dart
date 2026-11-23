@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'visual_questions.dart';
+
 /// مستويات الصعوبة
 enum Tier { easy, medium, hard }
 
@@ -27,7 +29,14 @@ extension TierX on Tier {
 /// مهارات الأسئلة (تُستخدم في رادار الاختبار الخاطف)
 enum Skill { patterns, math, language, logic }
 
+/// نوع عرض السؤال: نص فقط، أو معادلات رموز، أو مربعات أرقام، أو إيموجي الشاذ.
+enum QKind { text, equation, tiles, emojiOdd }
+
 class Question {
+  final QKind kind;
+
+  /// عناصر اللوحة المرئية: أسطر المعادلات، أو مربعات التسلسل (آخرها '?').
+  final List<String> visual;
   final String text;
   final List<String> options;
   final int answer; // رقم الإجابة الصحيحة داخل options
@@ -36,10 +45,34 @@ class Question {
   /// وسم المهارة. إن تُرك فارغاً يُستنتج من نص السؤال (انظر skillOf في quick_logic.dart)
   final Skill? skill;
   const Question(this.text, this.options, this.answer,
+      [this.explain, this.skill])
+      : kind = QKind.text,
+        visual = const [];
+  const Question.visual(this.kind, this.text, this.visual, this.options,
+      this.answer,
       [this.explain, this.skill]);
 }
 
 const int kQuestionsPerStage = 5;
+
+/// يوزّع الأسئلة المرئية بين النصية: 3 نصية ثم 1 مرئي، حتى تنتهي القائمتان.
+List<Question> _interleave(List<Question> text, List<Question> visual) {
+  final out = <Question>[];
+  var v = 0;
+  for (var i = 0; i < text.length; i++) {
+    out.add(text[i]);
+    if ((i + 1) % 3 == 0 && v < visual.length) out.add(visual[v++]);
+  }
+  while (v < visual.length) {
+    out.add(visual[v++]);
+  }
+  return out;
+}
+
+/// 60 سؤالاً لكل مستوى = 12 مرحلة × 5 أسئلة
+final Map<Tier, List<Question>> iqQuestions = {
+  for (final t in Tier.values) t: _interleave(_iqText[t]!, iqVisual[t]!),
+};
 
 List<Question> questionsFor(Tier tier, int stage) {
   final all = iqQuestions[tier]!;
@@ -55,8 +88,8 @@ List<Question> get allQuestions => [
 /// لإضافة مراحل جديدة أضف أسئلة بمضاعفات 5 وبالعدد نفسه في المستويات الثلاثة.
 int get iqStagesPerTier => iqQuestions[Tier.easy]!.length ~/ kQuestionsPerStage;
 
-/// 45 سؤالاً لكل مستوى = 9 مراحل × 5 أسئلة
-const Map<Tier, List<Question>> iqQuestions = {
+/// 45 سؤالاً نصياً لكل مستوى (يُضاف إليها 15 سؤالاً مرئياً في visual_questions.dart)
+const Map<Tier, List<Question>> _iqText = {
   Tier.easy: [
     Question('ما العدد التالي: 2، 4، 6، 8، ؟', ['9', '10', '11', '12'], 1,
         'كل عدد يزيد بمقدار 2'),

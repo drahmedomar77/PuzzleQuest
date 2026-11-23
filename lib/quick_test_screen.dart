@@ -9,6 +9,7 @@ import 'quick_logic.dart';
 import 'result_card.dart';
 import 'sfx.dart';
 import 'store.dart';
+import 'visual_widgets.dart';
 import 'widgets.dart';
 
 enum _Stage { intro, play, result }
@@ -223,7 +224,19 @@ class _QuickTestScreenState extends State<QuickTestScreen> {
               style: const TextStyle(
                   fontSize: 22, fontWeight: FontWeight.bold, height: 1.5)),
         ),
+        if (q.kind == QKind.equation || q.kind == QKind.tiles) ...[
+          const SizedBox(height: 12),
+          QuestionVisual(kind: q.kind, items: q.visual),
+        ],
         const SizedBox(height: 16),
+        if (q.kind == QKind.emojiOdd)
+          EmojiOptions(
+            options: q.options,
+            colorOf: (k) => Colors.white.withValues(alpha: 0.1),
+            hiddenOf: (k) => false,
+            onPick: _submit,
+          )
+        else
         for (var k = 0; k < q.options.length; k++)
           Padding(
             padding: const EdgeInsets.only(bottom: 10),

@@ -7,21 +7,26 @@ import 'questions.dart';
 import 'sfx.dart';
 import 'stages.dart';
 import 'store.dart';
+import 'visual_widgets.dart';
 import 'widgets.dart';
 
 class _Item {
+  final QKind kind;
+  final List<String> visual;
   final String text;
   final List<String> options;
   final int answer;
   final String? explain;
-  const _Item(this.text, this.options, this.answer, this.explain);
+  const _Item(this.kind, this.visual, this.text, this.options, this.answer,
+      this.explain);
 }
 
 /// نخلط ترتيب الخيارات حتى لا يحفظ اللاعب مكان الإجابة
 _Item _shuffled(Question q) {
   final correct = q.options[q.answer];
   final opts = [...q.options]..shuffle();
-  return _Item(q.text, opts, opts.indexOf(correct), q.explain);
+  return _Item(
+      q.kind, q.visual, q.text, opts, opts.indexOf(correct), q.explain);
 }
 
 class QuizScreen extends StatefulWidget {
@@ -222,8 +227,20 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
                 style: const TextStyle(
                     fontSize: 22, fontWeight: FontWeight.bold, height: 1.5)),
           ),
+          if (item.kind == QKind.equation || item.kind == QKind.tiles) ...[
+            const SizedBox(height: 12),
+            QuestionVisual(kind: item.kind, items: item.visual),
+          ],
           const SizedBox(height: 16),
-          for (var k = 0; k < item.options.length; k++) _option(item, k),
+          if (item.kind == QKind.emojiOdd)
+            EmojiOptions(
+              options: item.options,
+              colorOf: (k) => _optionColor(item, k),
+              hiddenOf: _hidden.contains,
+              onPick: _locked ? null : _pick,
+            )
+          else
+            for (var k = 0; k < item.options.length; k++) _option(item, k),
           const SizedBox(height: 8),
           if (_locked) ...[
             if (_picked == -1)
@@ -257,10 +274,7 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
     );
   }
 
-  Widget _option(_Item item, int k) {
-    if (_hidden.contains(k)) {
-      return const SizedBox(height: 0);
-    }
+  Color _optionColor(_Item item, int k) {
     Color bg = Colors.white.withValues(alpha: 0.1);
     if (_locked) {
       if (k == item.answer) {
@@ -269,6 +283,14 @@ class _QuizScreenState extends State<QuizScreen> with WidgetsBindingObserver {
         bg = Colors.red.withValues(alpha: 0.75);
       }
     }
+    return bg;
+  }
+
+  Widget _option(_Item item, int k) {
+    if (_hidden.contains(k)) {
+      return const SizedBox(height: 0);
+    }
+    final bg = _optionColor(item, k);
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Material(
