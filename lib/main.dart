@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'achievements.dart';
 import 'ads.dart';
-import 'home_screen.dart';
+import 'main_shell.dart';
 import 'store.dart';
 
 Future<void> main() async {
@@ -19,6 +20,7 @@ class LamaaApp extends StatelessWidget {
     return MaterialApp(
       title: 'لمعة',
       debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: rootMessengerKey,
       locale: const Locale('ar'),
       theme: ThemeData(
         useMaterial3: true,
@@ -31,7 +33,7 @@ class LamaaApp extends StatelessWidget {
       // واجهة من اليمين إلى اليسار
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child!),
-      home: const HomeScreen(),
+      home: const MainShell(),
     );
   }
 }

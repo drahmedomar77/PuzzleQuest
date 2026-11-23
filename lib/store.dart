@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,10 +25,14 @@ class Store {
     final yesterday = _dayKey(DateTime(now.year, now.month, now.day - 1));
     final s = last == yesterday ? streak + 1 : 1;
     await _p.setInt('streak', s);
+    if (s > (_p.getInt('best_streak') ?? 0)) await _p.setInt('best_streak', s);
     await _p.setString('last_day', today);
   }
 
   static int get streak => _p.getInt('streak') ?? 1;
+
+  /// أطول سلسلة أيام متتالية
+  static int get bestStreak => max(_p.getInt('best_streak') ?? 0, streak);
 
   // ---------- النجوم ----------
   static int stars(String key) => _p.getInt('stars_$key') ?? 0;
@@ -36,6 +42,24 @@ class Store {
       await _p.setInt('stars_$key', value);
       tick.value++;
     }
+  }
+
+  /// عدد المراحل المُجتازة (نجمة فأكثر) التي يبدأ مفتاحها بـ [prefix]، مثل 'iq_easy_'
+  static int passedStages(String prefix) {
+    var n = 0;
+    for (final k in _p.getKeys()) {
+      if (k.startsWith('stars_$prefix') && (_p.getInt(k) ?? 0) >= 1) n++;
+    }
+    return n;
+  }
+
+  /// عدد المراحل التي نالت 3 نجوم
+  static int threeStarStages() {
+    var n = 0;
+    for (final k in _p.getKeys()) {
+      if (k.startsWith('stars_') && (_p.getInt(k) ?? 0) >= 3) n++;
+    }
+    return n;
   }
 
   static int totalStars() {
@@ -49,8 +73,12 @@ class Store {
   // ---------- اللمعات ----------
   static int get coins => _p.getInt('coins') ?? 30;
 
+  /// إجمالي اللمعات التي كسبها اللاعب (لا يُنقص عند الإنفاق)
+  static int get coinsEarned => _p.getInt('coins_earned') ?? 0;
+
   static Future<void> addCoins(int n) async {
     await _p.setInt('coins', coins + n);
+    if (n > 0) await _p.setInt('coins_earned', coinsEarned + n);
     tick.value++;
   }
 
@@ -87,8 +115,33 @@ class Store {
   // ---------- تحدي اليوم ----------
   static bool get dailyDone => _p.getString('daily') == _dayKey(DateTime.now());
 
+  static int get dailyCount => _p.getInt('daily_count') ?? 0;
+
   static Future<void> markDaily() async {
     await _p.setString('daily', _dayKey(DateTime.now()));
+    await _p.setInt('daily_count', dailyCount + 1);
+    tick.value++;
+  }
+
+  // ---------- الإنجازات ----------
+  static Set<String> get unlockedAchievements =>
+      (_p.getStringList('ach') ?? const <String>[]).toSet();
+
+  /// يسجّل إنجازات جديدة ويضيف مكافأتها مباشرة دون احتسابها في «إجمالي المكتسب».
+  static Future<void> unlockAchievements(List<String> ids, int reward) async {
+    final all = unlockedAchievements..addAll(ids);
+    await _p.setStringList('ach', all.toList());
+    if (reward > 0) await _p.setInt('coins', coins + reward);
+    tick.value++;
+  }
+
+  // ---------- إعادة الضبط ----------
+  /// يمسح كل التقدم ويُبقي إعداد الصوت.
+  static Future<void> resetAll() async {
+    final sound = soundOn;
+    await _p.clear();
+    await _p.setBool('sound', sound);
+    await _touchStreak();
     tick.value++;
   }
 }

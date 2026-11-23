@@ -74,6 +74,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       title: 'لمعة ✨',
+      showBanner: false, // البانر الوحيد في الشريط السفلي (MainShell)
       actions: const [_SoundButton()],
       body: ValueListenableBuilder<int>(
         valueListenable: Store.tick,
