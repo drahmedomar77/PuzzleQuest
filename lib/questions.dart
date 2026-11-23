@@ -55,6 +55,21 @@ class Question {
 
 const int kQuestionsPerStage = 5;
 
+/// يخلط أنواع الأسئلة المرئية بالتناوب (معادلة، مربعات، شاذ، ...) حتى يرى اللاعب التنوع من أول المراحل.
+List<Question> _roundRobin(List<Question> v) {
+  final groups = [
+    for (final k in [QKind.equation, QKind.tiles, QKind.emojiOdd])
+      v.where((q) => q.kind == k).toList(),
+  ];
+  final out = <Question>[];
+  for (var i = 0; out.length < v.length; i++) {
+    for (final g in groups) {
+      if (i < g.length) out.add(g[i]);
+    }
+  }
+  return out;
+}
+
 /// يوزّع الأسئلة المرئية بين النصية: 3 نصية ثم 1 مرئي، حتى تنتهي القائمتان.
 List<Question> _interleave(List<Question> text, List<Question> visual) {
   final out = <Question>[];
@@ -71,7 +86,7 @@ List<Question> _interleave(List<Question> text, List<Question> visual) {
 
 /// 60 سؤالاً لكل مستوى = 12 مرحلة × 5 أسئلة
 final Map<Tier, List<Question>> iqQuestions = {
-  for (final t in Tier.values) t: _interleave(_iqText[t]!, iqVisual[t]!),
+  for (final t in Tier.values) t: _interleave(_iqText[t]!, _roundRobin(iqVisual[t]!)),
 };
 
 List<Question> questionsFor(Tier tier, int stage) {
