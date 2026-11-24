@@ -263,6 +263,16 @@ class _QuickTestScreenState extends State<QuickTestScreen> {
 
   Widget _resultView() {
     final r = _result!;
+    // نصغّر البطاقة بحيث تظهر الأزرار تحتها دون تمرير على أغلب الشاشات
+    return LayoutBuilder(builder: (context, box) => _resultList(r, box));
+  }
+
+  Widget _resultList(QuickResult r, BoxConstraints box) {
+    final maxW = box.maxWidth - 32;
+    final byHeight = (box.maxHeight - (_newBest ? 330 : 300)) *
+        ResultCardPainter.w /
+        ResultCardPainter.h;
+    final cardW = byHeight.clamp(220.0, maxW).toDouble();
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -276,11 +286,16 @@ class _QuickTestScreenState extends State<QuickTestScreen> {
                     fontWeight: FontWeight.bold,
                     color: Colors.greenAccent)),
           ),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: AspectRatio(
-            aspectRatio: ResultCardPainter.w / ResultCardPainter.h,
-            child: CustomPaint(painter: ResultCardPainter(r)),
+        Center(
+          child: SizedBox(
+            width: cardW,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: AspectRatio(
+                aspectRatio: ResultCardPainter.w / ResultCardPainter.h,
+                child: CustomPaint(painter: ResultCardPainter(r)),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 10),
